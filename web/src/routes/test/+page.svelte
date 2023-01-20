@@ -4,7 +4,7 @@
 
     let motion_detected = "Motion not allowed"
     let tested_motion = false
-    
+    let error = ""
     let height:number, width:number = 0;
     onMount(() => {
         window.addEventListener('click', () => {            
@@ -21,12 +21,12 @@
             return false;
         }
 
-        if (DeviceOrientationEvent.requestPermission && typeof DeviceMotionEvent.requestPermission === 'function' ) {
+        if ((DeviceOrientationEvent as any).requestPermission && typeof (DeviceMotionEvent as any).requestPermission === 'function' ) {
         let permission: PermissionState;
         try {
             console.log("Requesting permission...");
-            permission = await DeviceOrientationEvent.requestPermission();
-        } catch (err) {
+            permission = await (DeviceOrientationEvent as any).requestPermission();
+        } catch (err: any) {
             error = err.message;
             return false;
         }
@@ -39,10 +39,6 @@
         window.addEventListener('devicemotion', handleMotion);
         return true;
     };
-
-    function timeout(ms: number) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
 
     let dot = spring({ x: 50, y: 50, z: 0 }, {
 		stiffness: 0.1,
@@ -70,6 +66,7 @@
 </script>
 <svelte:window bind:innerWidth={width} bind:innerHeight={height} />
 <h1>Bump test</h1>
+<p>{error}</p>
 <p>Motion {motion_detected}</p>
 <p>{value}</p>
 <svg style="height: {height-20}px; width: {width-20}px;">

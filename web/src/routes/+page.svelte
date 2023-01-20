@@ -11,9 +11,7 @@
         if (navigator.geolocation) {
             navigatorSupported = true
         }
-        window.addEventListener('click', () => {
-            console.log("hello");
-            
+        window.addEventListener('click', () => {            
             if(!tested_motion) requestAccessAsync()
         })
     })
@@ -25,12 +23,12 @@
             return false;
         }
 
-        if (DeviceOrientationEvent.requestPermission && typeof DeviceMotionEvent.requestPermission === 'function' ) {
+        if ((DeviceOrientationEvent as any).requestPermission && typeof (DeviceMotionEvent as any).requestPermission === 'function' ) {
         let permission: PermissionState;
         try {
             console.log("Requesting permission...");
-            permission = await DeviceOrientationEvent.requestPermission();
-        } catch (err) {
+            permission = await (DeviceOrientationEvent as any).requestPermission();
+        } catch (err: any) {
             error = err.message;
             return false;
         }
