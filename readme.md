@@ -1,8 +1,12 @@
-# Bump Clone (Kinda)
+# Bump Clone (Kinda) - WIP
 
-A simple clone of [bu.mp](bu.mp) which used to be an app to send data between two devices using a simple "bump" gesture.
+A simple clone of [bu.mp](https://blog.bu.mp) which used to be an app to send data between two devices using a simple "bump" gesture.
 
 Implemented with SvelteKit and Pocketbase.
+
+Improvements needed:
+- Rework the matching such that it uses the realtime feature in pocketbase
+- Better physical bumps such that you don't need to buy an new phone each time you want to test
 
 Guide to run:
 - Download Pocketbase (https://pocketbase.io/docs/)
