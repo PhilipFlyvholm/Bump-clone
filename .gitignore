@@ -1,0 +1,7 @@
+./pb_data/
+pocketbase.exe
+*.pem
+.env
+/build/
+/output/
+/dist/
