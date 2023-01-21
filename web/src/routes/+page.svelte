@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount } from "svelte";
+    import PocketBase from 'pocketbase';
 
+    const pb = new PocketBase('http://127.0.0.1:8090');
     let motion_detected = "Motion not allowed"
     let pressed = 'not pressed'
     let name = Math.random().toString(36).substring(7)
@@ -94,13 +96,29 @@
             pressed = 'Could not bump. Try again...'
             return
         }
+        // const created = json["RequestTime"]
+        const recordId = json["RecordID"]
         pressed = 'Bumped! Waiting for match...'
-        await timeout(1000)
-        pressed = 'Almost there...'
+        console.log("Setting up listener...", recordId);
+        let foundMatch = false
+        let unsub = await pb.collection('bumps').subscribe(recordId, function (e) {
+            pressed = 'Matched with ' + e.record.matched_with
+            console.log(e.record);
+            foundMatch = true
+        });
+
+        await timeout(10*1000)
+        if(!foundMatch) {
+            pressed = 'Could not find match. Try again...'
+        }
+        unsub()
+        console.log("Unsubscribed");
+        
+        /*pressed = 'Almost there...'
         const match_response = await fetch('/api/match?' + new URLSearchParams({
             name: name,
             location: JSON.stringify(data.location),
-            requestTime: json["RequestTime"]
+            requestTime: created
         }))
         const match = await match_response.json()
         if(match["Status"] !== "OK"){
@@ -108,7 +126,7 @@
             return
         }
         pressed = 'Matched with ' + match["match"]["user"]
-        window.navigator.vibrate([200, 100, 200]);
+        window.navigator.vibrate([200, 100, 200]);*/
 
     }
     let max = 0

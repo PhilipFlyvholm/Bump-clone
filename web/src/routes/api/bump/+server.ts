@@ -14,7 +14,7 @@ export async function POST({ request }: { request: Request}) {
   };
   try{
     const record = await pb.collection('bumps').create(data, {'$cancelKey': `/api/bump/${name}`});
-    return json({Status: "OK", RequestTime: record.created});
+    return json({Status: "OK", RequestTime: record.created, RecordID: record.id});
   }catch(err){
     console.log(err);  
     return json({Status: "Error"});
