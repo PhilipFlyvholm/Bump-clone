@@ -2,9 +2,11 @@ import { json } from '@sveltejs/kit';
 import PocketBase from 'pocketbase';
 import dotenv from "dotenv"
 dotenv.config()
+
+const pocketbaseURL = process.env["POCKETBASE_URL"] ? process.env.POCKETBASE_URL : ""
 const adminEmail = process.env["ADMIN_EMAIL"] ? process.env.ADMIN_EMAIL : ""
 const adminPassword = process.env["ADMIN_PASSWORD"] ? process.env.ADMIN_PASSWORD : ""
-const pb = new PocketBase('http://127.0.0.1:8090');
+const pb = new PocketBase(pocketbaseURL);
 await pb.admins.authWithPassword(adminEmail, adminPassword);
 const r = 6371; // radius of Earth (KM)
 const p = Math.PI / 180;

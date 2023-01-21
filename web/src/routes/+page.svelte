@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { onMount } from "svelte";
     import PocketBase from 'pocketbase';
+    import { env } from '$env/dynamic/public';
 
-    const pb = new PocketBase('http://127.0.0.1:8090');
+    const pocketbaseURL = env["PUBLIC_POCKETBASE_URL"] ? env.PUBLIC_POCKETBASE_URL : ""
+    const pb = new PocketBase(pocketbaseURL);
     let motion_detected = "Motion not allowed"
     let pressed = 'not pressed'
     let name = Math.random().toString(36).substring(7)
