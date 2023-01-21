@@ -24,7 +24,7 @@ export default inngest.createFunction(
     const match = await getMatch(user, requestTime, location);
     if (match) {
       console.log('Match found', match);
-      if(match.matched_with === null){
+      if(match.matched_with === null || match.matched_with === undefined || match.matched_with === ""){
         pb.collection('bumps').update(match.id, {matched_with: user});
         pb.collection('bumps').update(recordId, {matched_with: match.user});
         return {success: true}
