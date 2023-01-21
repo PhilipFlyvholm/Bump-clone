@@ -1,4 +1,7 @@
 import { json } from '@sveltejs/kit';
+import { Inngest } from "inngest";
+const inngest = new Inngest({ name: "My app" })
+
 import PocketBase from 'pocketbase';
 
 const adminEmail = process.env["ADMIN_EMAIL"] ? process.env.ADMIN_EMAIL : ""
@@ -14,6 +17,17 @@ export async function POST({ request }: { request: Request}) {
   };
   try{
     const record = await pb.collection('bumps').create(data, {'$cancelKey': `/api/bump/${name}`});
+    inngest.setEventKey('dummp_key');
+    await inngest.send({
+      // The event name
+      name: "bump.created",
+      eventKey: 'dummp_key',
+      // The event's data
+      data: {
+        user: name,
+        RequestTime: record.created
+      }
+    });
     return json({Status: "OK", RequestTime: record.created, RecordID: record.id});
   }catch(err){
     console.log(err);  
