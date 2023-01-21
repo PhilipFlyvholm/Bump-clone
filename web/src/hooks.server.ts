@@ -77,7 +77,7 @@ const serve: ServeHandler = (nameOrInngest, fns, opts) => {
 			}: { event: RequestEvent; resolve: (event: RequestEvent) => Promise<Response> }
 		) => {
 			//set response stauts on new response object
-			const response = new Response(actionRes.body, { status: actionRes.status });
+			const response: Response = new Response(actionRes.body, { status: actionRes.status });
 			for (const [key, value] of Object.entries(actionRes.headers)) {
 				response.headers.set(key, value);
 			}
@@ -85,8 +85,11 @@ const serve: ServeHandler = (nameOrInngest, fns, opts) => {
 		}
 	);
 	const handlerObj = handler.createHandler();
+		
 	return handlerObj;
 };
+
+const inngestHandler = await serve('My app', [testFunction], {});
 
 export async function handle({
 	event,
@@ -95,7 +98,6 @@ export async function handle({
 	event: RequestEvent;
 	resolve: (event: RequestEvent) => Promise<Response>;
 }) {
-	if (event.url.pathname.startsWith('/api/inngest'))
-		return (serve('My app', [testFunction], {}))(event, resolve);
+	if (event.url.pathname.startsWith('/api/inngest')) return inngestHandler({event, resolve});
 	return await resolve(event);
 }
