@@ -3,10 +3,10 @@ import { inngest } from "../../../inngest/client.js";
 
 import PocketBase from 'pocketbase';
 
-//const pocketbaseURL = process.env["POCKETBASE_URL"] ? process.env.POCKETBASE_URL : ""
+const pocketbaseURL = process.env["PUBLIC_POCKETBASE_URL"] ? process.env.PUBLIC_POCKETBASE_URL : ""
 const adminEmail = process.env["ADMIN_EMAIL"] ? process.env.ADMIN_EMAIL : ""
 const adminPassword = process.env["ADMIN_PASSWORD"] ? process.env.ADMIN_PASSWORD : ""
-const pb = new PocketBase("http://127.0.0.1:8090");
+const pb = new PocketBase(pocketbaseURL);
 await pb.admins.authWithPassword(adminEmail, adminPassword);
 
 export async function POST({ request }: { request: Request}) {

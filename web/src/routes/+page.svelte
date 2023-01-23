@@ -55,13 +55,13 @@
     async function handle(){
         console.log("Getting location...");
         
-        pressed = `pressed by ${name}`
+        pressed = "Getting location..."
         navigator.geolocation.getCurrentPosition((pos) => {
             console.log(pos)
             sendBump(pos.coords)
         }, (err) => {
             console.log(err)
-            pressed = 'not pressed'
+            pressed = 'Geolocation error. Try again... ' + err.message
         },
         {
             enableHighAccuracy: true,
