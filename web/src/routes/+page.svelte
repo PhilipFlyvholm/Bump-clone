@@ -111,26 +111,21 @@
 
         await timeout(10*1000)
         if(!foundMatch) {
-            pressed = 'Could not find match. Try again...'
+            const match_response = await fetch('/api/match?' + new URLSearchParams({
+                recordId: recordId
+            }))
+            const match = await match_response.json()
+            if(match["Status"] !== "OK" || match["matched_with"] === ""){
+                pressed = 'Could not find match. Try again...'
+                return
+            }
+            pressed = 'Matched with ' + match["matched_with"]
         }
         unsub()
         console.log("Unsubscribed");
-        
-        /*pressed = 'Almost there...'
-        const match_response = await fetch('/api/match?' + new URLSearchParams({
-            name: name,
-            location: JSON.stringify(data.location),
-            requestTime: created
-        }))
-        const match = await match_response.json()
-        if(match["Status"] !== "OK"){
-            pressed = 'Could not find match. Try again...'
-            return
-        }
-        pressed = 'Matched with ' + match["match"]["user"]
-        window.navigator.vibrate([200, 100, 200]);*/
-
     }
+
+
     let max = 0
     function handleMotion(e: DeviceMotionEvent){
         

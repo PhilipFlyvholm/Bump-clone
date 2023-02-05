@@ -3,10 +3,10 @@ import { Inngest } from "inngest";
 export type GeoLocation = {
 	lat: number;
 	lon: number;
-	accruacy?: number;
+	accuracy?: number;
 	attitude?: number;
 	speed?: number;
-	attitudeAccuracy?: number;
+	altitudeAccuracy?: number;
 	heading?: number;
 };
 
