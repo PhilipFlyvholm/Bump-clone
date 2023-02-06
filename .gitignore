@@ -1,7 +1,12 @@
 /pb_data/
 pocketbase.exe
+pocketbase
 *.pem
 .env
 /build/
 /output/
 /dist/
+Caddyfile
+*.log
+*/coverage/
+.DS_Store
