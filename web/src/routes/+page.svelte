@@ -2,50 +2,39 @@
 	import { onMount } from "svelte";
     import PocketBase from 'pocketbase';
     import { env } from '$env/dynamic/public';
-
+	import GeolocationPrompt from "../libs/GeolocationPrompt.svelte";
+    import { PermissionsStore } from "../utils/stores";
+	import MotionPrompt from "../libs/MotionPrompt.svelte";
     const pocketbaseURL = env["PUBLIC_POCKETBASE_URL"] ? env.PUBLIC_POCKETBASE_URL : ""
     const pb = new PocketBase(pocketbaseURL);
     let motion_detected = "Motion not allowed"
     let pressed = 'not pressed'
     let name = Math.random().toString(36).substring(7)
-    let navigatorSupported = false
     let error = ""
-    let tested_motion = false
-    onMount(() => {
-        if (navigator.geolocation) {
-            navigatorSupported = true
-        }
-        window.addEventListener('click', () => {            
-            if(!tested_motion) requestAccessAsync()
-        })
+    let supported_device = true
+    let permissions = {
+        geolocation: false,
+        motion: false
+    }
+    PermissionsStore.subscribe((value) => {
+        permissions = value
     })
-
-
-    const requestAccessAsync = async (): Promise<boolean> => {
-        if (!DeviceOrientationEvent) {
-            error = 'Device orientation event is not supported by your browser';
-            return false;
-        }
-
-        if ((DeviceOrientationEvent as any).requestPermission && typeof (DeviceMotionEvent as any).requestPermission === 'function' ) {
-        let permission: PermissionState;
-        try {
-            console.log("Requesting permission...");
-            permission = await (DeviceOrientationEvent as any).requestPermission();
-        } catch (err: any) {
-            error = err.message;
-            return false;
-        }
-        if (permission !== 'granted') {
-            error = 'Request to access the device orientation was rejected';
-            return false;
-        }
-        }
-
-        window.addEventListener('devicemotion', handleMotion);
-
-        return true;
-    };
+    onMount(() => {
+        supported_device = navigator.geolocation ? true : false; //only navigator.geolocation is gives warning
+        navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+            if (result.state === 'granted') {
+                PermissionsStore.update((value) => {
+                    value.geolocation = true
+                    return value
+                })
+                console.log("Geolocation already granted");
+            } else if (result.state === 'denied') {
+                console.log("Geolocation denied");
+            } else if (result.state === 'prompt') {
+                console.log("Geolocation prompt");
+            }
+        });
+    })
 
     function handleKey(e: KeyboardEvent){
         if(e.code === 'Space'){
@@ -143,15 +132,19 @@
 
 </script>
 <svelte:window on:keydown={handleKey}/>
-<h1>Bump clone</h1>
-<input type="text" bind:value={name} />
-<button on:click={handle}>Send "bump"</button>
-<p>Or press spacebar</p>
-<p>{pressed}</p>
-<p>Motion {motion_detected}</p>
-<p>{error}</p>
-{#if navigatorSupported}
-    <p>Geolocation is supported</p>
+{#if supported_device}
+    {#if !permissions.geolocation}
+        <GeolocationPrompt />
+    {:else if !permissions.motion}
+        <MotionPrompt handleMotion={handleMotion}/>
+    {/if}
+    <h1>Bump clone</h1>
+    <input type="text" bind:value={name} />
+    <button on:click={handle}>Send "bump"</button>
+    <p>Or press spacebar</p>
+    <p>{pressed}</p>
+    <p>Motion {motion_detected}</p>
+    <p>{error}</p>
 {:else}
-    <p>Geolocation is not supported</p>
+    <p>Your device is not supported device</p>
 {/if}
