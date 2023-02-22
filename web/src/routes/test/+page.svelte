@@ -77,9 +77,15 @@
 		motion_detected = Math.round(x) + ' ' + Math.round(y) + ' ' + Math.round(z);
 		dots.push({ x: x, y: y, z: z, tick: i++ });
 		dots = dots;
+		textArea += x + ',' + y + ',' + z + ',' + i + '\n';
+		
 	}
 	const x = (d: dot) => d.tick;
 	const y = [(d: dot) => d.x, (d: dot) => d.y, (d: dot) => d.z];
+	let textArea = "";
+	dots.forEach((d) => {
+		textArea += d.x + ',' + d.y + ',' + d.z + ',' + d.tick + '\n';
+	})
 </script>
 
 <h1>Bump test</h1>
@@ -102,3 +108,7 @@
 	on:click={() => {
 		dots = [];
 	}}>Clear  </button>
+
+<textarea>
+	{textArea}
+</textarea>
