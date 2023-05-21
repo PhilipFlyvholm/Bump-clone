@@ -5,7 +5,7 @@
     let error = '';
     
     onMount(() => {
-        if (
+        if ( typeof DeviceOrientationEvent === 'undefined' ||
             !(DeviceOrientationEvent as any).requestPermission ||
             typeof (DeviceMotionEvent as any).requestPermission !== 'function'
         ) {
